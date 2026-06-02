@@ -3,131 +3,260 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UC Store</title>
+    <title>NESHOP</title>
     <style>
         body {
-            background-color: #121212;
+            background-color: #0a0a0c;
             color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 15px;
+            -webkit-user-select: none;
         }
+        
+        /* Хедер */
         .header {
-            text-align: center;
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: #f3a91a;
-        }
-        .card {
-            background: #1a1a1a;
-            border: 1px solid #2d2d2d;
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-        .product-info {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            font-size: 18px;
-            font-weight: bold;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 5px 0;
         }
-        .price {
-            color: #f3a91a;
+        .brand-name {
+            font-size: 22px;
+            font-weight: 800;
+            color: #deff9a;
+            letter-spacing: 1px;
         }
-        input {
-            width: 100%;
-            padding: 12px;
-            background: #252525;
-            border: 1px solid #3d3d3d;
-            border-radius: 8px;
+        .back-btn {
+            background: #1c1c1e;
+            border: 1px solid #2c2c2e;
             color: #fff;
-            font-size: 16px;
-            box-sizing: border-box;
-            margin-top: 10px;
-        }
-        button {
-            width: 100%;
-            padding: 14px;
-            background: #f3a91a;
-            border: none;
+            padding: 8px 14px;
             border-radius: 8px;
-            color: #000;
-            font-size: 16px;
-            font-weight: bold;
+            font-size: 14px;
             cursor: pointer;
-            margin-top: 12px;
+        }
+
+        /* Экраны */
+        .screen { display: none; }
+        .screen.active { display: block; }
+
+        /* Сетка игр (Главный экран) */
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .game-card {
+            background: #121214;
+            border: 1px solid #1c1c1e;
+            border-radius: 16px;
+            padding: 20px 15px;
+            text-align: center;
+            position: relative;
+            cursor: pointer;
             transition: 0.2s;
         }
-        button:active {
-            transform: scale(0.98);
+        .game-card.active:active { transform: scale(0.97); border-color: #deff9a; }
+        .game-card.disabled { opacity: 0.4; cursor: not-allowed; }
+        .game-icon { font-size: 32px; margin-bottom: 10px; }
+        .game-title { font-weight: 600; font-size: 16px; }
+        .badge-soon {
+            position: absolute;
+            top: 8px; right: 8px;
+            background: #2c2c2e;
+            color: #8e8e93;
+            font-size: 10px;
+            padding: 3px 6px;
+            border-radius: 6px;
         }
-        .nickname {
-            margin-top: 10px;
-            color: #4caf50;
-            font-weight: bold;
-            display: none;
+
+        /* Табы (Внутри игры) */
+        .tabs {
+            display: flex;
+            background: #121214;
+            padding: 4px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #1c1c1e;
+        }
+        .tab {
+            flex: 1; text-align: center; padding: 10px; border-radius: 8px;
+            font-weight: 600; font-size: 14px; cursor: pointer;
+        }
+        .tab.active { background: #deff9a; color: #000; }
+        .tab.disabled { opacity: 0.5; }
+
+        /* Товары */
+        .product-list {
+            display: flex; flex-direction: column; gap: 12px;
+        }
+        .product-item {
+            background: #121214;
+            border: 1px solid #1c1c1e;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex; justify-content: space-between; align-items: center;
+            cursor: pointer;
+        }
+        .product-item:active { border-color: #deff9a; }
+        .product-name { font-weight: 600; font-size: 16px; }
+        .product-price { color: #deff9a; font-weight: 700; font-size: 16px; }
+
+        /* Экран заказа */
+        .order-box {
+            background: #121214; border: 1px solid #1c1c1e;
+            border-radius: 16px; padding: 20px; margin-bottom: 20px;
+        }
+        input {
+            width: 100%; padding: 14px; background: #1c1c1e;
+            border: 1px solid #2c2c2e; border-radius: 10px;
+            color: #fff; font-size: 16px; box-sizing: border-box; margin-top: 10px;
+        }
+        input:focus { border-color: #deff9a; outline: none; }
+        
+        .main-btn {
+            width: 100%; padding: 16px; background: #deff9a;
+            border: none; border-radius: 10px; color: #000;
+            font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 15px;
         }
         .sbp-btn {
-            background: #0054ae;
-            color: #fff;
-            display: none;
+            width: 100%; padding: 16px; background: #0054ae;
+            border: none; border-radius: 10px; color: #fff;
+            font-size: 16px; font-weight: 700; cursor: pointer;
+            margin-top: 15px; display: none; text-align: center;
+        }
+        .nickname-display {
+            margin-top: 15px; padding: 12px; background: rgba(222, 255, 154, 0.1);
+            border: 1px dashed #deff9a; border-radius: 8px;
+            color: #deff9a; font-weight: 600; text-align: center; display: none;
         }
     </style>
 </head>
 <body>
 
-    <div class="header">Ваш заказ</div>
-
-    <div class="card">
-        <div class="product-info">
-            <span>🎫 60 UC</span>
-            <span class="price">65 ₽</span>
+    <div id="screen-main" class="screen active">
+        <div class="header">
+            <div class="brand-name">NESHOP</div>
+        </div>
+        <div class="game-grid">
+            <div class="game-card active" onclick="openGame('pubg')">
+                <div class="game-icon">🔫</div>
+                <div class="game-title">PUBG Mobile</div>
+            </div>
+            <div class="game-card disabled">
+                <div class="badge-soon">скоро</div>
+                <div class="game-icon">🎮</div>
+                <div class="game-title">Steam</div>
+            </div>
+            <div class="game-card disabled">
+                <div class="badge-soon">скоро</div>
+                <div class="game-icon">🕹️</div>
+                <div class="game-title">PS Store</div>
+            </div>
+            <div class="game-card disabled">
+                <div class="badge-soon">скоро</div>
+                <div class="game-icon">⭐</div>
+                <div class="game-title">TG Stars</div>
+            </div>
         </div>
     </div>
 
-    <div class="card">
-        <label for="pubg-id" style="font-size: 14px; color: #aaa;">Ваш ID:</label>
-        <input type="number" id="pubg-id" placeholder="Введите PUBG ID">
-        <button id="check-btn" onclick="checkId()">Проверить ID</button>
-        <div id="nickname" class="nickname"></div>
+    <div id="screen-pubg" class="screen">
+        <div class="header">
+            <button class="back-btn" onclick="openScreen('screen-main')">⬅ Все игры</button>
+            <div class="brand-name">NESHOP</div>
+        </div>
+        <div class="tabs">
+            <div class="tab active">UC</div>
+            <div class="tab disabled">KEY <span style="font-size:10px;color:#8e8e93;">(скоро)</span></div>
+        </div>
+        <div class="product-list">
+            <div class="product-item" onclick="selectProduct('60 UC', 65)">
+                <div class="product-name">🎫 60 UC</div>
+                <div class="product-price">65 ₽</div>
+            </div>
+            <div class="product-item" onclick="selectProduct('660 UC', 650)">
+                <div class="product-name">🎁 660 UC</div>
+                <div class="product-price">650 ₽</div>
+            </div>
+        </div>
     </div>
 
-    <button id="sbp-btn" class="sbp-btn" onclick="payWithSBP()">Оплатить через СБП</button>
+    <div id="screen-order" class="screen">
+        <div class="header">
+            <button class="back-btn" onclick="openScreen('screen-pubg')">⬅ Назад</button>
+            <div class="brand-name">NESHOP</div>
+        </div>
+        <div class="order-box">
+            <div style="font-size: 14px; color: #8e8e93;">Ваш заказ:</div>
+            <div id="order-details" style="font-size: 20px; font-weight: 700; margin-top: 5px; color: #deff9a;"></div>
+        </div>
+        <div class="order-box">
+            <label style="font-size: 14px; color: #8e8e93;">Введите PUBG ID:</label>
+            <input type="number" id="pubg-id" placeholder="Например: 512345678">
+            <button class="main-btn" id="check-btn" onclick="verifyPlayerId()">Проверить ID</button>
+            <div id="nickname-output" class="nickname-display"></div>
+        </div>
+        <button class="sbp-btn" id="pay-btn" onclick="confirmPayment()">Оплатить через СБП</button>
+    </div>
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
         const tg = window.Telegram.WebApp;
-        tg.expand(); // Разворачивает приложение на весь экран
+        tg.expand();
 
-        function checkId() {
-            const playerImg = document.getElementById('pubg-id').value;
-            if(!playerImg) {
-                alert("Пожалуйста, введите ID");
+        let selectedItem = "";
+        let selectedPrice = 0;
+
+        function openScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function openGame(game) {
+            if(game === 'pubg') openScreen('screen-pubg');
+        }
+
+        function selectProduct(name, price) {
+            selectedItem = name;
+            selectedPrice = price;
+            document.getElementById('order-details').innerText = `${name} — ${price} ₽`;
+            
+            // Сбрасываем старые данные ввода при новом переходе
+            document.getElementById('pubg-id').value = "";
+            document.getElementById('nickname-output').style.display = "none";
+            document.getElementById('pay-btn').style.display = "none";
+            
+            openScreen('screen-order');
+        }
+
+        function verifyPlayerId() {
+            const idValue = document.getElementById('pubg-id').value;
+            if(!idValue) {
+                alert("Введите ваш ID аккаунта!");
                 return;
             }
 
-            // Имитируем проверку на сайте. Когда подключим API, тут будет реальный запрос
-            document.getElementById('nickname').innerText = "Аккаунт найден: 😎 СУПЕР_ПРО_ИГРОК";
-            document.getElementById('nickname').style.display = "block";
-            
-            // Показываем кнопку оплаты СБП
-            document.getElementById('sbp-btn').style.display = "block";
+            // Пока у нас нет АПИ, делаем заглушку. На следующем уроке прикрутим реальный ответ
+            document.getElementById('nickname-output').innerText = "Аккаунт найден: 👑 NESHOP_PLAYER 👑";
+            document.getElementById('nickname-output').style.display = "block";
+            document.getElementById('pay-btn').style.display = "block";
         }
 
-        function payWithSBP() {
-            const playerId = document.getElementById('pubg-id').value;
-            
-            // Отправляем данные обратно в нашего Python-бота
-            const data = {
-                id: playerId,
-                item: "60 UC",
-                price: 65
+        function confirmPayment() {
+            const idValue = document.getElementById('pubg-id').value;
+            const orderData = {
+                action: "initiate_payment",
+                game: "pubg_mobile",
+                item: selectedItem,
+                price: selectedPrice,
+                player_id: idValue
             };
-            tg.sendData(JSON.stringify(data)); // Бот получит эту строку
-            tg.close(); // Закрываем мини-приложение
+            // Отправляем всё это дело обратно в нашего Python-бота
+            tg.sendData(JSON.stringify(orderData));
+            tg.close();
         }
     </script>
 </body>
