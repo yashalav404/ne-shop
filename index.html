@@ -58,18 +58,21 @@
             cursor: pointer;
             transition: 0.2s;
         }
-        .game-card.active:active { transform: scale(0.97); border-color: #deff9a; }
-        .game-card.disabled { opacity: 0.4; cursor: not-allowed; }
+        .game-card:active { transform: scale(0.97); border-color: #deff9a; }
         .game-icon { font-size: 32px; margin-bottom: 10px; }
         .game-title { font-weight: 600; font-size: 16px; }
+        
         .badge-soon {
             position: absolute;
             top: 8px; right: 8px;
-            background: #2c2c2e;
-            color: #8e8e93;
+            background: rgba(222, 255, 154, 0.1);
+            color: #deff9a;
+            border: 1px solid rgba(222, 255, 154, 0.3);
             font-size: 10px;
             padding: 3px 6px;
             border-radius: 6px;
+            text-transform: uppercase;
+            font-weight: 700;
         }
 
         /* Табы (Внутри игры) */
@@ -86,7 +89,6 @@
             font-weight: 600; font-size: 14px; cursor: pointer;
         }
         .tab.active { background: #deff9a; color: #000; }
-        .tab.disabled { opacity: 0.5; }
 
         /* Товары */
         .product-list {
@@ -132,6 +134,26 @@
             border: 1px dashed #deff9a; border-radius: 8px;
             color: #deff9a; font-weight: 600; text-align: center; display: none;
         }
+
+        /* Стиль для экрана СКОРО по центру */
+        .soon-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 60vh;
+            text-align: center;
+        }
+        .soon-title {
+            font-size: 26px;
+            font-weight: 800;
+            color: #deff9a;
+            margin-bottom: 10px;
+        }
+        .soon-subtitle {
+            font-size: 16px;
+            color: #8e8e93;
+        }
     </style>
 </head>
 <body>
@@ -141,21 +163,21 @@
             <div class="brand-name">NESHOP</div>
         </div>
         <div class="game-grid">
-            <div class="game-card active" onclick="openGame('pubg')">
+            <div class="game-card" onclick="openGame('pubg')">
                 <div class="game-icon">🔫</div>
                 <div class="game-title">PUBG Mobile</div>
             </div>
-            <div class="game-card disabled">
+            <div class="game-card" onclick="openSoon('Steam', 'screen-main')">
                 <div class="badge-soon">скоро</div>
                 <div class="game-icon">🎮</div>
                 <div class="game-title">Steam</div>
             </div>
-            <div class="game-card disabled">
+            <div class="game-card" onclick="openSoon('PS Store', 'screen-main')">
                 <div class="badge-soon">скоро</div>
                 <div class="game-icon">🕹️</div>
                 <div class="game-title">PS Store</div>
             </div>
-            <div class="game-card disabled">
+            <div class="game-card" onclick="openSoon('TG Stars', 'screen-main')">
                 <div class="badge-soon">скоро</div>
                 <div class="game-icon">⭐</div>
                 <div class="game-title">TG Stars</div>
@@ -170,7 +192,9 @@
         </div>
         <div class="tabs">
             <div class="tab active">UC</div>
-            <div class="tab disabled">KEY <span style="font-size:10px;color:#8e8e93;">(скоро)</span></div>
+            <div class="tab" onclick="openSoon('PUBG KEY', 'screen-pubg')" style="color: #8e8e93;">
+                KEY <span style="font-size:10px; background: rgba(222,255,154,0.1); color:#deff9a; padding: 2px 4px; border-radius:4px; margin-left:3px;">СКОРО</span>
+            </div>
         </div>
         <div class="product-list">
             <div class="product-item" onclick="selectProduct('60 UC', 65)">
@@ -202,6 +226,17 @@
         <button class="sbp-btn" id="pay-btn" onclick="confirmPayment()">Оплатить через СБП</button>
     </div>
 
+    <div id="screen-soon" class="screen">
+        <div class="header">
+            <button class="back-btn" id="soon-back-btn" onclick="openScreen('screen-main')">⬅ Назад</button>
+            <div class="brand-name">NESHOP</div>
+        </div>
+        <div class="soon-container">
+            <div id="soon-section-name" class="soon-title">РАЗДЕЛ</div>
+            <div class="soon-subtitle">⏳ Находится в разработке.<br>Совсем скоро этот продукт будет доступен!</div>
+        </div>
+    </div>
+
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
         const tg = window.Telegram.WebApp;
@@ -219,12 +254,22 @@
             if(game === 'pubg') openScreen('screen-pubg');
         }
 
+        // Логика открытия экрана "Скоро"
+        function openSoon(sectionName, fromScreen) {
+            // Меняем текст по центру на название раздела
+            document.getElementById('soon-section-name').innerText = sectionName.toUpperCase();
+            
+            # Настраиваем кнопку назад, чтобы возвращала на правильный экран
+            document.getElementById('soon-back-btn').setAttribute("onclick", `openScreen('${fromScreen}')`);
+            
+            openScreen('screen-soon');
+        }
+
         function selectProduct(name, price) {
             selectedItem = name;
             selectedPrice = price;
             document.getElementById('order-details').innerText = `${name} — ${price} ₽`;
             
-            // Сбрасываем старые данные ввода при новом переходе
             document.getElementById('pubg-id').value = "";
             document.getElementById('nickname-output').style.display = "none";
             document.getElementById('pay-btn').style.display = "none";
@@ -239,7 +284,6 @@
                 return;
             }
 
-            // Пока у нас нет АПИ, делаем заглушку. На следующем уроке прикрутим реальный ответ
             document.getElementById('nickname-output').innerText = "Аккаунт найден: 👑 NESHOP_PLAYER 👑";
             document.getElementById('nickname-output').style.display = "block";
             document.getElementById('pay-btn').style.display = "block";
@@ -254,7 +298,6 @@
                 price: selectedPrice,
                 player_id: idValue
             };
-            // Отправляем всё это дело обратно в нашего Python-бота
             tg.sendData(JSON.stringify(orderData));
             tg.close();
         }
