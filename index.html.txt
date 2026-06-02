@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UC Store</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 15px;
+        }
+        .header {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #f3a91a;
+        }
+        .card {
+            background: #1a1a1a;
+            border: 1px solid #2d2d2d;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .product-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .price {
+            color: #f3a91a;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            background: #252525;
+            border: 1px solid #3d3d3d;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #f3a91a;
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 12px;
+            transition: 0.2s;
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+        .nickname {
+            margin-top: 10px;
+            color: #4caf50;
+            font-weight: bold;
+            display: none;
+        }
+        .sbp-btn {
+            background: #0054ae;
+            color: #fff;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">Ваш заказ</div>
+
+    <div class="card">
+        <div class="product-info">
+            <span>🎫 60 UC</span>
+            <span class="price">65 ₽</span>
+        </div>
+    </div>
+
+    <div class="card">
+        <label for="pubg-id" style="font-size: 14px; color: #aaa;">Ваш ID:</label>
+        <input type="number" id="pubg-id" placeholder="Введите PUBG ID">
+        <button id="check-btn" onclick="checkId()">Проверить ID</button>
+        <div id="nickname" class="nickname"></div>
+    </div>
+
+    <button id="sbp-btn" class="sbp-btn" onclick="payWithSBP()">Оплатить через СБП</button>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Разворачивает приложение на весь экран
+
+        function checkId() {
+            const playerImg = document.getElementById('pubg-id').value;
+            if(!playerImg) {
+                alert("Пожалуйста, введите ID");
+                return;
+            }
+
+            // Имитируем проверку на сайте. Когда подключим API, тут будет реальный запрос
+            document.getElementById('nickname').innerText = "Аккаунт найден: 😎 СУПЕР_ПРО_ИГРОК";
+            document.getElementById('nickname').style.display = "block";
+            
+            // Показываем кнопку оплаты СБП
+            document.getElementById('sbp-btn').style.display = "block";
+        }
+
+        function payWithSBP() {
+            const playerId = document.getElementById('pubg-id').value;
+            
+            // Отправляем данные обратно в нашего Python-бота
+            const data = {
+                id: playerId,
+                item: "60 UC",
+                price: 65
+            };
+            tg.sendData(JSON.stringify(data)); // Бот получит эту строку
+            tg.close(); // Закрываем мини-приложение
+        }
+    </script>
+</body>
+</html>
