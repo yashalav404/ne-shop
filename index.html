@@ -271,16 +271,68 @@
             openScreen('screen-order');
         }
 
-        function verifyPlayerId() {
-            const idValue = document.getElementById('pubg-id').value;
-            if(!idValue) {
-                alert("Введите ваш ID аккаунта!");
-                return;
+     function verifyPlayerId() {
+    const idValue = document.getElementById('pubg-id').value;
+    if(!idValue) {
+        alert("Введите ваш ID аккаунта!");
+        return;
+    }
+
+    const checkBtn = document.getElementById('check-btn');
+    const nicknameOutput = document.getElementById('nickname-output');
+    const payBtn = document.getElementById('pay-btn');
+
+    // Визуально меняем кнопку, чтобы пользователь видел, что идет загрузка
+    checkBtn.innerText = "⏳ Проверяем...";
+    checkBtn.disabled = true;
+    nicknameOutput.style.display = "none";
+
+    // 🔗 СЮДА МЫ ПОДСТАВИМ РЕАЛЬНУЮ ССЫЛКУ НА АПИ САЙТА
+    // Пока для примера я поставлю тестовый URL. Замени его на свой, когда будешь готов.
+    const apiURL = `https://github.com/NightsSoftware/MidasbuyAPI?ysclid=mpwjy48l5g35227529`;
+
+    // Делаем реальный запрос в интернет
+    fetch(apiURL)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Сервер вернул ошибку или ID не существует");
             }
-            document.getElementById('nickname-output').innerText = "Аккаунт найден: 👑 NESHOP_PLAYER 👑";
-            document.getElementById('nickname-output').style.display = "block";
-            document.getElementById('pay-btn').style.display = "block";
-        }
+            return response.json(); // Переводим ответ сайта в понятный объект
+        })
+        .then(data => {
+            // Предположим, твой сайт возвращает ответ в формате: { "nickname": "ИМЯ_ИГРОКА" }
+            // Мы берем это имя и красиво выводим под полем ввода
+            if (data && data.nickname) {
+                nicknameOutput.innerText = `Nickname: ${data.nickname}`;
+                nicknameOutput.style.color = "#deff9a"; // Зеленый цвет успеха
+                nicknameOutput.style.borderColor = "#deff9a";
+                nicknameOutput.style.display = "block";
+                
+                payBtn.style.display = "block"; // Показываем кнопку СБП только если игрок найден!
+            } else {
+                // Если сайт ответил, но имя пустое
+                nicknameOutput.innerText = "❌ Игрок с таким ID не найден";
+                nicknameOutput.style.color = "#ff4d4d"; // Красный цвет ошибки
+                nicknameOutput.style.borderColor = "#ff4d4d";
+                nicknameOutput.style.display = "block";
+                payBtn.style.display = "none";
+            }
+        })
+        .catch(error => {
+            // Если сайт упал, нет интернета или неверный URL
+            console.error("Ошибка API:", error);
+            nicknameOutput.innerText = "❌ Ошибка соединения с сервером проверки";
+            nicknameOutput.style.color = "#ff4d4d";
+            nicknameOutput.style.borderColor = "#ff4d4d";
+            nicknameOutput.style.display = "block";
+            payBtn.style.display = "none";
+        })
+        .finally(() => {
+            // Возвращаем кнопку в исходное состояние в любом случае
+            checkBtn.innerText = "Проверить ID";
+            checkBtn.disabled = false;
+        });
+}
 
         function confirmPayment() {
             const idValue = document.getElementById('pubg-id').value;
