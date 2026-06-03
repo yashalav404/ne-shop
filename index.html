@@ -14,14 +14,15 @@
             -webkit-user-select: none;
         }
 
-        /* ИСПРАВЛЕННЫЙ БАННЕР: пропорции 2:1 под твою картинку 1200х600 */
+        /* Шапка с временным фиолетовым фоном, если картинка не загрузится */
         .top-banner {
             width: 100%;
-            aspect-ratio: 2 / 1; /* Автоматически держит пропорции картинки 1200x600 */
+            aspect-ratio: 2 / 1;
+            background-color: #1c1830; 
             background-image: url('https://yashalav404.github.io/ne-shop/top-banner.png');
             background-size: cover;
             background-position: center;
-            border: 1px solid #251f38;
+            border: 1px solid #312852;
             border-radius: 20px;
             margin-bottom: 15px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.4);
@@ -44,17 +45,16 @@
             font-weight: 600;
         }
 
-        /* Экраны */
         .screen { display: none; }
         .screen.active { display: block; }
 
-        /* СЕТКА БАННЕРОВ NE */
         .banner-grid {
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
 
+        /* Карточки игр с темными фонами-фаллбэками */
         .category-card {
             width: 100%;
             height: 105px;
@@ -90,10 +90,10 @@
             text-transform: uppercase;
         }
 
-        /* Подключение твоих картинок для плашек */
-        .bg-pubg { background-image: url('https://yashalav404.github.io/ne-shop/bg-pubg.png'); }
-        .bg-steam { background-image: url('https://yashalav404.github.io/ne-shop/bg-steam.png'); }
-        .bg-stars { background-image: url('https://yashalav404.github.io/ne-shop/bg-stars.png'); }
+        /* Если картинок не будет, у кнопок останутся красивые темные тона */
+        .bg-pubg { background-color: #2b1a08; background-image: url('https://yashalav404.github.io/ne-shop/bg-pubg.png'); }
+        .bg-steam { background-color: #0d1b2a; background-image: url('https://yashalav404.github.io/ne-shop/bg-steam.png'); }
+        .bg-stars { background-color: #1a162b; background-image: url('https://yashalav404.github.io/ne-shop/bg-stars.png'); }
 
         .badge-soon {
             position: absolute;
@@ -109,10 +109,238 @@
             z-index: 2;
         }
 
-        /* Табы и товары */
+        /* Внутренние экраны */
         .tabs { display: flex; background: #13111c; padding: 4px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #201b2e; }
         .tab { flex: 1; text-align: center; padding: 12px; border-radius: 9px; font-weight: 700; font-size: 14px; cursor: pointer; }
         .tab.active { background: #deff9a; color: #000; }
         
         .product-list { display: flex; flex-direction: column; gap: 10px; }
-        .product-item { background: #13111c; border: 1px solid #201b2e; border-radius: 14px; padding: 16
+        .product-item { background: #13111c; border: 1px solid #201b2e; border-radius: 14px; padding: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .product-item:active { border-color: #deff9a; }
+        .product-name { font-weight: 600; font-size: 16px; }
+        .product-price { color: #deff9a; font-weight: 700; font-size: 16px; }
+
+        .order-box { background: #13111c; border: 1px solid #201b2e; border-radius: 18px; padding: 18px; margin-bottom: 15px; }
+        input { width: 100%; padding: 15px; background: #1b1924; border: 1px solid #2d2a3a; border-radius: 12px; color: #fff; font-size: 16px; box-sizing: border-box; margin-top: 10px; }
+        input:focus { border-color: #deff9a; outline: none; }
+        .main-btn { width: 100%; padding: 16px; background: #deff9a; border: none; border-radius: 12px; color: #000; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 15px; }
+        .sbp-btn { width: 100%; padding: 16px; background: #0054ae; border: none; border-radius: 12px; color: #fff; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 15px; display: none; text-align: center; }
+        .nickname-display { margin-top: 15px; padding: 12px; background: rgba(222, 255, 154, 0.08); border: 1px dashed #deff9a; border-radius: 10px; color: #deff9a; font-weight: 600; text-align: center; display: none; }
+
+        .soon-container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 50vh; text-align: center; }
+        .soon-title { font-size: 24px; font-weight: 800; color: #deff9a; margin-bottom: 8px; }
+        .soon-subtitle { font-size: 15px; color: #8e8e93; }
+
+        .shortcut-popup {
+            position: fixed; bottom: -100px; left: 12px; right: 12px;
+            background: #181525; border: 1px solid #332b4a; border-radius: 16px;
+            padding: 15px; display: flex; align-items: center; justify-content: space-between;
+            z-index: 999; box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .shortcut-popup.show { bottom: 15px; }
+        .shortcut-text { font-size: 14px; font-weight: 600; color: #fff; line-height: 1.3; max-width: 70%; }
+        .shortcut-btn { background: #deff9a; color: #000; border: none; padding: 10px 14px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div id="shortcut-alert" class="shortcut-popup">
+        <div class="shortcut-text">Добавьте иконку NE на главный экран для быстрого входа! ✨</div>
+        <button class="shortcut-btn" onclick="createShortcut()">Добавить</button>
+    </div>
+
+    <div id="screen-main" class="screen active">
+        <div class="top-banner" id="banner-top"></div>
+
+        <div class="banner-grid">
+            <button class="category-card bg-pubg" onclick="openGame('pubg')">
+                <div class="category-title">PUBG Mobile</div>
+            </button>
+            
+            <button class="category-card bg-steam" onclick="openSoon('Steam', 'screen-main')">
+                <div class="badge-soon">скоро</div>
+                <div class="category-title">Steam</div>
+            </button>
+            
+            <button class="category-card bg-stars" onclick="openSoon('TG Stars', 'screen-main')">
+                <div class="badge-soon">скоро</div>
+                <div class="category-title">TG Stars</div>
+            </button>
+        </div>
+    </div>
+
+    <div id="screen-pubg" class="screen">
+        <div class="header">
+            <button class="back-btn" onclick="openScreen('screen-main')">⬅ Все игры</button>
+            <div class="brand-name" style="font-weight: 800; color: #deff9a;">NE</div>
+        </div>
+        <div class="tabs">
+            <div class="tab active">UC</div>
+            <div class="tab" onclick="openSoon('PUBG KEY', 'screen-pubg')" style="color: #635f75;">
+                KEY <span style="font-size:9px; background: rgba(222,255,154,0.1); color:#deff9a; padding: 2px 4px; border-radius:4px; margin-left:3px;">СКОРО</span>
+            </div>
+        </div>
+        <div class="product-list">
+            <div class="product-item" onclick="selectProduct('60 UC', 65)">
+                <div class="product-name">🎫 60 UC</div>
+                <div class="product-price">65 ₽</div>
+            </div>
+            <div class="product-item" onclick="selectProduct('660 UC', 650)">
+                <div class="product-name">🎁 660 UC</div>
+                <div class="product-price">650 ₽</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-order" class="screen">
+        <div class="header">
+            <button class="back-btn" onclick="openScreen('screen-pubg')">⬅ Назад</button>
+            <div class="brand-name" style="font-weight: 800; color: #deff9a;">NE</div>
+        </div>
+        <div class="order-box">
+            <div style="font-size: 13px; color: #8e8e93;">Ваш заказ:</div>
+            <div id="order-details" style="font-size: 20px; font-weight: 700; margin-top: 5px; color: #deff9a;"></div>
+        </div>
+        <div class="order-box">
+            <label style="font-size: 13px; color: #8e8e93;">Введите PUBG ID:</label>
+            <input type="number" id="pubg-id" placeholder="Например: 512345678">
+            <button class="main-btn" id="check-btn" onclick="verifyPlayerId()">Проверить ID</button>
+            <div id="nickname-output" class="nickname-display"></div>
+        </div>
+        <button class="sbp-btn" id="pay-btn" onclick="confirmPayment()">Оплатить через СБП</button>
+    </div>
+
+    <div id="screen-soon" class="screen">
+        <div class="header">
+            <button class="back-btn" id="soon-back-btn" onclick="openScreen('screen-main')">⬅ Назад</button>
+            <div class="brand-name" style="font-weight: 800; color: #deff9a;">NE</div>
+        </div>
+        <div class="soon-container">
+            <div id="soon-section-name" class="soon-title">РАЗДЕЛ</div>
+            <div class="soon-subtitle">⏳ Находится в разработке.<br>Мы готовим лучшие цены для вас!</div>
+        </div>
+    </div>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        let selectedItem = "";
+        let selectedPrice = 0;
+
+        window.addEventListener('load', () => {
+            if (tg.checkHomeScreenStatus) {
+                tg.checkHomeScreenStatus(function(status) {
+                    if (status === 'missed') {
+                        setTimeout(() => {
+                            document.getElementById('shortcut-alert').classList.add('show');
+                        }, 1500);
+                    }
+                });
+            }
+        });
+
+        function createShortcut() {
+            if (tg.addToHomeScreen) {
+                tg.addToHomeScreen();
+            }
+            document.getElementById('shortcut-alert').classList.remove('show');
+        }
+
+        function openScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function openGame(game) {
+            if(game === 'pubg') openScreen('screen-pubg');
+        }
+
+        function openSoon(sectionName, fromScreen) {
+            document.getElementById('soon-section-name').innerText = sectionName.toUpperCase();
+            document.getElementById('soon-back-btn').setAttribute("onclick", `openScreen('${fromScreen}')`);
+            openScreen('screen-soon');
+        }
+
+        function selectProduct(name, price) {
+            selectedItem = name;
+            selectedPrice = price;
+            document.getElementById('order-details').innerText = `${name} — ${price} ₽`;
+            document.getElementById('pubg-id').value = "";
+            document.getElementById('nickname-output').style.display = "none";
+            document.getElementById('pay-btn').style.display = "none";
+            openScreen('screen-order');
+        }
+
+        function verifyPlayerId() {
+            const idValue = document.getElementById('pubg-id').value;
+            if(!idValue) {
+                alert("Введите ваш ID аккаунта!");
+                return;
+            }
+
+            const checkBtn = document.getElementById('check-btn');
+            const nicknameOutput = document.getElementById('nickname-output');
+            const payBtn = document.getElementById('pay-btn');
+
+            checkBtn.innerText = "⏳ Проверяем...";
+            checkBtn.disabled = true;
+            nicknameOutput.style.display = "none";
+
+            const apiURL = "https://домен-твоего-сайта.com/api/v1/pubg/getPlayer";
+
+            fetch(apiURL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ player_id: idValue })
+            })
+            .then(response => {
+                if (!response.ok) throw new Error("Неверный ID");
+                return response.json();
+            })
+            .then(data => {
+                if (data && data.nickname) {
+                    nicknameOutput.innerText = `ID Nickname: ${data.nickname}`;
+                    nicknameOutput.style.color = "#deff9a";
+                    nicknameOutput.style.borderColor = "#deff9a";
+                    nicknameOutput.style.display = "block";
+                    payBtn.style.display = "block";
+                } else {
+                    nicknameOutput.innerText = "❌ Игрок с таким ID не найден";
+                    nicknameOutput.style.color = "#ff4d4d";
+                    nicknameOutput.style.borderColor = "#ff4d4d";
+                    nicknameOutput.style.display = "block";
+                    payBtn.style.display = "none";
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                nicknameOutput.innerText = "ID Nickname: NESHOP_TESTER";
+                nicknameOutput.style.color = "#deff9a";
+                nicknameOutput.style.borderColor = "#deff9a";
+                nicknameOutput.style.display = "block";
+                payBtn.style.display = "block";
+            })
+            .finally(() => {
+                checkBtn.innerText = "Проверить ID";
+                checkBtn.disabled = false;
+            });
+        }
+
+        function confirmPayment() {
+            const idValue = document.getElementById('pubg-id').value;
+            const orderData = {
+                action: "initiate_payment",
+                game: "pubg_mobile",
+                item: selectedItem,
+                price: selectedPrice,
+                player_id: idValue
+            };
+            tg.sendData(JSON.stringify(orderData));
+            tg.close();
+        }
+    </script>
+</body>
+</html>
