@@ -15,7 +15,7 @@
         }
 
         /* Верхний брендированный баннер NE */
-     .top-banner {
+       .top-banner {
             width: 100%;
             height: 110px;
             background-image: url('https://yashalav404.github.io/ne-shop/top-banner.png');
@@ -45,6 +45,8 @@
             background: linear-gradient(90deg, #ffffff, #deff9a);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            position: relative;
+            z-index: 2;
         }
 
         .header {
@@ -68,19 +70,13 @@
         .screen { display: none; }
         .screen.active { display: block; }
 
-        /* СПЕЦИАЛЬНАЯ СЕТКА БАННЕРОВ (КАК НА СКРИНШОТАХ) */
+        /* СЕТКА БАННЕРОВ NE */
         .banner-grid {
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
-        .row-double {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
 
-        /* Карточка категории общего вида */
         .category-card {
             width: 100%;
             height: 105px;
@@ -97,10 +93,11 @@
             box-sizing: border-box;
             text-align: left;
             transition: transform 0.2s;
+            color: #fff;
+            font-family: inherit;
         }
         .category-card:active { transform: scale(0.98); }
         
-        /* Затемнение поверх картинок, чтобы читался текст */
         .category-card::after {
             content: ''; position: absolute; top:0; left:0; right:0; bottom:0;
             background: linear-gradient(to top, rgba(0,0,0,0.85) 20%, rgba(0,0,0,0.2) 100%);
@@ -115,13 +112,8 @@
             text-transform: uppercase;
         }
 
-        /* Половинки (для G-Coin и Freefire) */
-        .row-double .category-card {
-            height: 95px;
-        }
-
-        /* Временные фоны-градиенты (Потом заменишь на свои ссылки на картинки) */
-     .bg-pubg { 
+        /* Фоновые градиенты (Заменяются на url('ссылка') после готовности картинок) */
+        .bg-pubg { 
             background-image: url('https://yashalav404.github.io/ne-shop/bg-pubg.png'); 
         }
         .bg-steam { 
@@ -130,8 +122,6 @@
         .bg-stars { 
             background-image: url('https://yashalav404.github.io/ne-shop/bg-stars.png'); 
         }
-        .bg-gcoin { background-image: linear-gradient(45deg, #241432, #0d0912); }
-        .bg-freefire { background-image: linear-gradient(45deg, #3c1414, #120909); }
 
         .badge-soon {
             position: absolute;
@@ -158,7 +148,7 @@
         .product-name { font-weight: 600; font-size: 16px; }
         .product-price { color: #deff9a; font-weight: 700; font-size: 16px; }
 
-        /* Конструктор заказа */
+        /* Оформление заказа */
         .order-box { background: #13111c; border: 1px solid #201b2e; border-radius: 18px; padding: 18px; margin-bottom: 15px; }
         input { width: 100%; padding: 15px; background: #1b1924; border: 1px solid #2d2a3a; border-radius: 12px; color: #fff; font-size: 16px; box-sizing: border-box; margin-top: 10px; }
         input:focus { border-color: #deff9a; outline: none; }
@@ -170,7 +160,7 @@
         .soon-title { font-size: 24px; font-weight: 800; color: #deff9a; margin-bottom: 8px; }
         .soon-subtitle { font-size: 15px; color: #8e8e93; }
 
-        /* ВСПЛЫВАЮЩЕЕ ОКНО СКАЧИВАНИЯ ИКОНКИ */
+        /* Всплывающее окно иконки */
         .shortcut-popup {
             position: fixed; bottom: -100px; left: 12px; right: 12px;
             background: #181525; border: 1px solid #332b4a; border-radius: 16px;
@@ -191,35 +181,24 @@
     </div>
 
     <div id="screen-main" class="screen active">
-        <div class="top-banner">
+        <div class="top-banner" id="banner-top">
             <div class="brand-logo">NE</div>
         </div>
 
         <div class="banner-grid">
-            <div class="category-card bg-pubg" onclick="openGame('pubg')">
+            <button class="category-card bg-pubg" onclick="openGame('pubg')">
                 <div class="category-title">PUBG Mobile</div>
-            </div>
+            </button>
             
-            <div class="category-card bg-steam" onclick="openSoon('Steam', 'screen-main')">
+            <button class="category-card bg-steam" onclick="openSoon('Steam', 'screen-main')">
                 <div class="badge-soon">скоро</div>
                 <div class="category-title">Steam</div>
-            </div>
+            </button>
             
-            <div class="category-card bg-stars" onclick="openSoon('TG Stars', 'screen-main')">
+            <button class="category-card bg-stars" onclick="openSoon('TG Stars', 'screen-main')">
                 <div class="badge-soon">скоро</div>
                 <div class="category-title">TG Stars</div>
-            </div>
-
-            <div class="row-double">
-                <div class="category-card bg-gcoin" onclick="openSoon('G-Coin', 'screen-main')">
-                    <div class="badge-soon">скоро</div>
-                    <div class="category-title">G-Coin</div>
-                </div>
-                <div class="category-card bg-freefire" onclick="openSoon('Free Fire', 'screen-main')">
-                    <div class="badge-soon">скоро</div>
-                    <div class="category-title">Free Fire</div>
-                </div>
-            </div>
+            </button>
         </div>
     </div>
 
@@ -283,12 +262,10 @@
         let selectedItem = "";
         let selectedPrice = 0;
 
-        // ПРОВЕРКА СТАТУСА ИКОНКИ НА СТАРТЕ
         window.addEventListener('load', () => {
             if (tg.checkHomeScreenStatus) {
                 tg.checkHomeScreenStatus(function(status) {
                     if (status === 'missed') {
-                        // Если иконки еще нет, красиво выдвигаем плашку снизу через 1.5 секунды
                         setTimeout(() => {
                             document.getElementById('shortcut-alert').classList.add('show');
                         }, 1500);
@@ -299,7 +276,7 @@
 
         function createShortcut() {
             if (tg.addToHomeScreen) {
-                tg.addToHomeScreen(); // Вызов встроенного окна добавления от Telegram
+                tg.addToHomeScreen();
             }
             document.getElementById('shortcut-alert').classList.remove('show');
         }
@@ -344,7 +321,6 @@
             checkBtn.disabled = true;
             nicknameOutput.style.display = "none";
 
-            // Сюда вставляется адрес твоего сайта-верификатора
             const apiURL = "https://домен-твоего-сайта.com/api/v1/pubg/getPlayer";
 
             fetch(apiURL, {
@@ -357,7 +333,6 @@
                 return response.json();
             })
             .then(data => {
-                // Если сайт вернул поле 'nickname'
                 if (data && data.nickname) {
                     nicknameOutput.innerText = `ID Nickname: ${data.nickname}`;
                     nicknameOutput.style.color = "#deff9a";
@@ -374,8 +349,7 @@
             })
             .catch(error => {
                 console.error(error);
-                // На время разработки, пока ты не поменял адрес сайта на реальный,
-                // оставим симуляцию успеха, чтобы ты мог тестировать остальной функционал:
+                // Заглушка для тестов, пока не подключен реальный домен API
                 nicknameOutput.innerText = "ID Nickname: NESHOP_TESTER";
                 nicknameOutput.style.color = "#deff9a";
                 nicknameOutput.style.borderColor = "#deff9a";
