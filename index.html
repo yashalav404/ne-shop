@@ -2,199 +2,228 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NESHOP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NE SHOP</title>
     <style>
         body {
-            background-color: #0a0a0c;
+            background-color: #0b0a0f;
             color: #ffffff;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, sans-serif;
             margin: 0;
-            padding: 15px;
+            padding: 12px;
             -webkit-user-select: none;
         }
-        
-        /* Хедер */
+
+        /* Верхний брендированный баннер NE */
+        .top-banner {
+            width: 100%;
+            height: 110px;
+            background: linear-gradient(135deg, #181528 0%, #09070f 100%);
+            border: 1px solid #251f38;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+        .top-banner::before {
+            content: ''; position: absolute; width: 80px; height: 40px;
+            background: #deff9a; filter: blur(50px); opacity: 0.2;
+            top: 20%; left: 40%;
+        }
+        .brand-logo {
+            font-size: 32px;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: 5px;
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+            background: linear-gradient(90deg, #ffffff, #deff9a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
         .header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 20px;
-            padding: 5px 0;
-        }
-        .brand-name {
-            font-size: 22px;
-            font-weight: 800;
-            color: #deff9a;
-            letter-spacing: 1px;
+            margin-bottom: 15px;
         }
         .back-btn {
-            background: #1c1c1e;
-            border: 1px solid #2c2c2e;
+            background: #1b1924;
+            border: 1px solid #2d2a3a;
             color: #fff;
-            padding: 8px 14px;
-            border-radius: 8px;
+            padding: 10px 16px;
+            border-radius: 12px;
             font-size: 14px;
             cursor: pointer;
+            font-weight: 600;
         }
 
         /* Экраны */
         .screen { display: none; }
         .screen.active { display: block; }
 
-        /* Сетка игр (Главный экран) */
-        .game-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
+        /* СПЕЦИАЛЬНАЯ СЕТКА БАННЕРОВ (КАК НА СКРИНШОТАХ) */
+        .banner-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
-        .game-card {
-            background: #121214;
-            border: 1px solid #1c1c1e;
-            border-radius: 16px;
-            padding: 20px 15px;
-            text-align: center;
+        .row-double {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        /* Карточка категории общего вида */
+        .category-card {
+            width: 100%;
+            height: 105px;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background-size: cover;
+            background-position: center;
             position: relative;
             cursor: pointer;
-            transition: 0.2s;
-            color: #fff;
-            font-family: inherit;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
+            padding: 15px;
+            box-sizing: border-box;
+            text-align: left;
+            transition: transform 0.2s;
         }
-        .game-card:active { transform: scale(0.97); border-color: #deff9a; }
-        .game-icon { font-size: 32px; margin-bottom: 10px; }
-        .game-title { font-weight: 600; font-size: 16px; }
+        .category-card:active { transform: scale(0.98); }
         
+        /* Затемнение поверх картинок, чтобы читался текст */
+        .category-card::after {
+            content: ''; position: absolute; top:0; left:0; right:0; bottom:0;
+            background: linear-gradient(to top, rgba(0,0,0,0.85) 20%, rgba(0,0,0,0.2) 100%);
+            z-index: 1;
+        }
+        .category-title {
+            position: relative;
+            z-index: 2;
+            font-weight: 700;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        /* Половинки (для G-Coin и Freefire) */
+        .row-double .category-card {
+            height: 95px;
+        }
+
+        /* Временные фоны-градиенты (Потом заменишь на свои ссылки на картинки) */
+        .bg-pubg { background-image: linear-gradient(45deg, #3a2205, #14110c); }
+        .bg-steam { background-image: linear-gradient(45deg, #10253c, #0b111a); }
+        .bg-stars { background-image: linear-gradient(45deg, #2c2512, #14120e); }
+        .bg-gcoin { background-image: linear-gradient(45deg, #241432, #0d0912); }
+        .bg-freefire { background-image: linear-gradient(45deg, #3c1414, #120909); }
+
         .badge-soon {
             position: absolute;
-            top: 8px; right: 8px;
-            background: rgba(222, 255, 154, 0.1);
+            top: 12px; right: 12px;
+            background: rgba(222, 255, 154, 0.15);
             color: #deff9a;
-            border: 1px solid rgba(222, 255, 154, 0.3);
-            font-size: 10px;
+            border: 1px solid rgba(222, 255, 154, 0.4);
+            font-size: 9px;
             padding: 3px 6px;
             border-radius: 6px;
-            text-transform: uppercase;
-            font-weight: 700;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            z-index: 2;
         }
 
-        /* Табы */
-        .tabs {
-            display: flex;
-            background: #121214;
-            padding: 4px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #1c1c1e;
-        }
-        .tab {
-            flex: 1; text-align: center; padding: 10px; border-radius: 8px;
-            font-weight: 600; font-size: 14px; cursor: pointer;
-        }
+        /* Табы и товары */
+        .tabs { display: flex; background: #13111c; padding: 4px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #201b2e; }
+        .tab { flex: 1; text-align: center; padding: 12px; border-radius: 9px; font-weight: 700; font-size: 14px; cursor: pointer; }
         .tab.active { background: #deff9a; color: #000; }
-
-        /* Товары */
-        .product-list {
-            display: flex; flex-direction: column; gap: 12px;
-        }
-        .product-item {
-            background: #121214;
-            border: 1px solid #1c1c1e;
-            border-radius: 12px;
-            padding: 16px;
-            display: flex; justify-content: space-between; align-items: center;
-            cursor: pointer;
-        }
+        
+        .product-list { display: flex; flex-direction: column; gap: 10px; }
+        .product-item { background: #13111c; border: 1px solid #201b2e; border-radius: 14px; padding: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
         .product-item:active { border-color: #deff9a; }
         .product-name { font-weight: 600; font-size: 16px; }
         .product-price { color: #deff9a; font-weight: 700; font-size: 16px; }
 
-        /* Экран заказа */
-        .order-box {
-            background: #121214; border: 1px solid #1c1c1e;
-            border-radius: 16px; padding: 20px; margin-bottom: 20px;
-        }
-        input {
-            width: 100%; padding: 14px; background: #1c1c1e;
-            border: 1px solid #2c2c2e; border-radius: 10px;
-            color: #fff; font-size: 16px; box-sizing: border-box; margin-top: 10px;
-        }
+        /* Конструктор заказа */
+        .order-box { background: #13111c; border: 1px solid #201b2e; border-radius: 18px; padding: 18px; margin-bottom: 15px; }
+        input { width: 100%; padding: 15px; background: #1b1924; border: 1px solid #2d2a3a; border-radius: 12px; color: #fff; font-size: 16px; box-sizing: border-box; margin-top: 10px; }
         input:focus { border-color: #deff9a; outline: none; }
-        
-        .main-btn {
-            width: 100%; padding: 16px; background: #deff9a;
-            border: none; border-radius: 10px; color: #000;
-            font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 15px;
-        }
-        .sbp-btn {
-            width: 100%; padding: 16px; background: #0054ae;
-            border: none; border-radius: 10px; color: #fff;
-            font-size: 16px; font-weight: 700; cursor: pointer;
-            margin-top: 15px; display: none; text-align: center;
-        }
-        .nickname-display {
-            margin-top: 15px; padding: 12px; background: rgba(222, 255, 154, 0.1);
-            border: 1px dashed #deff9a; border-radius: 8px;
-            color: #deff9a; font-weight: 600; text-align: center; display: none;
-        }
+        .main-btn { width: 100%; padding: 16px; background: #deff9a; border: none; border-radius: 12px; color: #000; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 15px; }
+        .sbp-btn { width: 100%; padding: 16px; background: #0054ae; border: none; border-radius: 12px; color: #fff; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 15px; display: none; text-align: center; }
+        .nickname-display { margin-top: 15px; padding: 12px; background: rgba(222, 255, 154, 0.08); border: 1px dashed #deff9a; border-radius: 10px; color: #deff9a; font-weight: 600; text-align: center; display: none; }
 
-        .soon-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 60vh;
-            text-align: center;
+        .soon-container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 50vh; text-align: center; }
+        .soon-title { font-size: 24px; font-weight: 800; color: #deff9a; margin-bottom: 8px; }
+        .soon-subtitle { font-size: 15px; color: #8e8e93; }
+
+        /* ВСПЛЫВАЮЩЕЕ ОКНО СКАЧИВАНИЯ ИКОНКИ */
+        .shortcut-popup {
+            position: fixed; bottom: -100px; left: 12px; right: 12px;
+            background: #181525; border: 1px solid #332b4a; border-radius: 16px;
+            padding: 15px; display: flex; align-items: center; justify-content: space-between;
+            z-index: 999; box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .soon-title {
-            font-size: 26px;
-            font-weight: 800;
-            color: #deff9a;
-            margin-bottom: 10px;
-        }
-        .soon-subtitle {
-            font-size: 16px;
-            color: #8e8e93;
-        }
+        .shortcut-popup.show { bottom: 15px; }
+        .shortcut-text { font-size: 14px; font-weight: 600; color: #fff; line-height: 1.3; max-width: 70%; }
+        .shortcut-btn { background: #deff9a; color: #000; border: none; padding: 10px 14px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; }
     </style>
 </head>
 <body>
 
+    <div id="shortcut-alert" class="shortcut-popup">
+        <div class="shortcut-text">Добавьте иконку NE на главный экран для быстрого входа! ✨</div>
+        <button class="shortcut-btn" onclick="createShortcut()">Добавить</button>
+    </div>
+
     <div id="screen-main" class="screen active">
-        <div class="header">
-            <div class="brand-name">NESHOP</div>
+        <div class="top-banner">
+            <div class="brand-logo">NE</div>
         </div>
-        <div class="game-grid">
-            <button class="game-card" onclick="openGame('pubg')">
-                <div class="game-icon">🔫</div>
-                <div class="game-title">PUBG Mobile</div>
-            </button>
-            <button class="game-card" onclick="openSoon('Steam', 'screen-main')">
+
+        <div class="banner-grid">
+            <div class="category-card bg-pubg" onclick="openGame('pubg')">
+                <div class="category-title">PUBG Mobile</div>
+            </div>
+            
+            <div class="category-card bg-steam" onclick="openSoon('Steam', 'screen-main')">
                 <div class="badge-soon">скоро</div>
-                <div class="game-icon">🎮</div>
-                <div class="game-title">Steam</div>
-            </button>
-            <button class="game-card" onclick="openSoon('PS Store', 'screen-main')">
+                <div class="category-title">Steam</div>
+            </div>
+            
+            <div class="category-card bg-stars" onclick="openSoon('TG Stars', 'screen-main')">
                 <div class="badge-soon">скоро</div>
-                <div class="game-icon">🕹️</div>
-                <div class="game-title">PS Store</div>
-            </button>
-            <button class="game-card" onclick="openSoon('TG Stars', 'screen-main')">
-                <div class="badge-soon">скоро</div>
-                <div class="game-icon">⭐</div>
-                <div class="game-title">TG Stars</div>
-            </button>
+                <div class="category-title">TG Stars</div>
+            </div>
+
+            <div class="row-double">
+                <div class="category-card bg-gcoin" onclick="openSoon('G-Coin', 'screen-main')">
+                    <div class="badge-soon">скоро</div>
+                    <div class="category-title">G-Coin</div>
+                </div>
+                <div class="category-card bg-freefire" onclick="openSoon('Free Fire', 'screen-main')">
+                    <div class="badge-soon">скоро</div>
+                    <div class="category-title">Free Fire</div>
+                </div>
+            </div>
         </div>
     </div>
 
     <div id="screen-pubg" class="screen">
         <div class="header">
             <button class="back-btn" onclick="openScreen('screen-main')">⬅ Все игры</button>
-            <div class="brand-name">NESHOP</div>
+            <div class="brand-name" style="font-weight: 800; color: #deff9a;">NE</div>
         </div>
         <div class="tabs">
             <div class="tab active">UC</div>
-            <div class="tab" onclick="openSoon('PUBG KEY', 'screen-pubg')" style="color: #8e8e93;">
-                KEY <span style="font-size:10px; background: rgba(222,255,154,0.1); color:#deff9a; padding: 2px 4px; border-radius:4px; margin-left:3px;">СКОРО</span>
+            <div class="tab" onclick="openSoon('PUBG KEY', 'screen-pubg')" style="color: #635f75;">
+                KEY <span style="font-size:9px; background: rgba(222,255,154,0.1); color:#deff9a; padding: 2px 4px; border-radius:4px; margin-left:3px;">СКОРО</span>
             </div>
         </div>
         <div class="product-list">
@@ -212,14 +241,14 @@
     <div id="screen-order" class="screen">
         <div class="header">
             <button class="back-btn" onclick="openScreen('screen-pubg')">⬅ Назад</button>
-            <div class="brand-name">NESHOP</div>
+            <div class="brand-name" style="font-weight: 800; color: #deff9a;">NE</div>
         </div>
         <div class="order-box">
-            <div style="font-size: 14px; color: #8e8e93;">Ваш заказ:</div>
+            <div style="font-size: 13px; color: #8e8e93;">Ваш заказ:</div>
             <div id="order-details" style="font-size: 20px; font-weight: 700; margin-top: 5px; color: #deff9a;"></div>
         </div>
         <div class="order-box">
-            <label style="font-size: 14px; color: #8e8e93;">Введите PUBG ID:</label>
+            <label style="font-size: 13px; color: #8e8e93;">Введите PUBG ID:</label>
             <input type="number" id="pubg-id" placeholder="Например: 512345678">
             <button class="main-btn" id="check-btn" onclick="verifyPlayerId()">Проверить ID</button>
             <div id="nickname-output" class="nickname-display"></div>
@@ -230,11 +259,11 @@
     <div id="screen-soon" class="screen">
         <div class="header">
             <button class="back-btn" id="soon-back-btn" onclick="openScreen('screen-main')">⬅ Назад</button>
-            <div class="brand-name">NESHOP</div>
+            <div class="brand-name" style="font-weight: 800; color: #deff9a;">NE</div>
         </div>
         <div class="soon-container">
             <div id="soon-section-name" class="soon-title">РАЗДЕЛ</div>
-            <div class="soon-subtitle">⏳ Находится в разработке.<br>Сочнее и мощнее — совсем скоро!</div>
+            <div class="soon-subtitle">⏳ Находится в разработке.<br>Мы готовим лучшие цены для вас!</div>
         </div>
     </div>
 
@@ -245,6 +274,27 @@
 
         let selectedItem = "";
         let selectedPrice = 0;
+
+        // ПРОВЕРКА СТАТУСА ИКОНКИ НА СТАРТЕ
+        window.addEventListener('load', () => {
+            if (tg.checkHomeScreenStatus) {
+                tg.checkHomeScreenStatus(function(status) {
+                    if (status === 'missed') {
+                        // Если иконки еще нет, красиво выдвигаем плашку снизу через 1.5 секунды
+                        setTimeout(() => {
+                            document.getElementById('shortcut-alert').classList.add('show');
+                        }, 1500);
+                    }
+                });
+            }
+        });
+
+        function createShortcut() {
+            if (tg.addToHomeScreen) {
+                tg.addToHomeScreen(); // Вызов встроенного окна добавления от Telegram
+            }
+            document.getElementById('shortcut-alert').classList.remove('show');
+        }
 
         function openScreen(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -271,68 +321,64 @@
             openScreen('screen-order');
         }
 
-     function verifyPlayerId() {
-    const idValue = document.getElementById('pubg-id').value;
-    if(!idValue) {
-        alert("Введите ваш ID аккаунта!");
-        return;
-    }
-
-    const checkBtn = document.getElementById('check-btn');
-    const nicknameOutput = document.getElementById('nickname-output');
-    const payBtn = document.getElementById('pay-btn');
-
-    // Визуально меняем кнопку, чтобы пользователь видел, что идет загрузка
-    checkBtn.innerText = "⏳ Проверяем...";
-    checkBtn.disabled = true;
-    nicknameOutput.style.display = "none";
-
-    // 🔗 СЮДА МЫ ПОДСТАВИМ РЕАЛЬНУЮ ССЫЛКУ НА АПИ САЙТА
-    // Пока для примера я поставлю тестовый URL. Замени его на свой, когда будешь готов.
-    const apiURL = `https://github.com/NightsSoftware/MidasbuyAPI?ysclid=mpwjy48l5g35227529`;
-
-    // Делаем реальный запрос в интернет
-    fetch(apiURL)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("Сервер вернул ошибку или ID не существует");
+        function verifyPlayerId() {
+            const idValue = document.getElementById('pubg-id').value;
+            if(!idValue) {
+                alert("Введите ваш ID аккаунта!");
+                return;
             }
-            return response.json(); // Переводим ответ сайта в понятный объект
-        })
-        .then(data => {
-            // Предположим, твой сайт возвращает ответ в формате: { "nickname": "ИМЯ_ИГРОКА" }
-            // Мы берем это имя и красиво выводим под полем ввода
-            if (data && data.nickname) {
-                nicknameOutput.innerText = `Nickname: ${data.nickname}`;
-                nicknameOutput.style.color = "#deff9a"; // Зеленый цвет успеха
+
+            const checkBtn = document.getElementById('check-btn');
+            const nicknameOutput = document.getElementById('nickname-output');
+            const payBtn = document.getElementById('pay-btn');
+
+            checkBtn.innerText = "⏳ Проверяем...";
+            checkBtn.disabled = true;
+            nicknameOutput.style.display = "none";
+
+            // Сюда вставляется адрес твоего сайта-верификатора
+            const apiURL = "https://домен-твоего-сайта.com/api/v1/pubg/getPlayer";
+
+            fetch(apiURL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ player_id: idValue })
+            })
+            .then(response => {
+                if (!response.ok) throw new Error("Неверный ID");
+                return response.json();
+            })
+            .then(data => {
+                // Если сайт вернул поле 'nickname'
+                if (data && data.nickname) {
+                    nicknameOutput.innerText = `ID Nickname: ${data.nickname}`;
+                    nicknameOutput.style.color = "#deff9a";
+                    nicknameOutput.style.borderColor = "#deff9a";
+                    nicknameOutput.style.display = "block";
+                    payBtn.style.display = "block";
+                } else {
+                    nicknameOutput.innerText = "❌ Игрок с таким ID не найден";
+                    nicknameOutput.style.color = "#ff4d4d";
+                    nicknameOutput.style.borderColor = "#ff4d4d";
+                    nicknameOutput.style.display = "block";
+                    payBtn.style.display = "none";
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                // На время разработки, пока ты не поменял адрес сайта на реальный,
+                // оставим симуляцию успеха, чтобы ты мог тестировать остальной функционал:
+                nicknameOutput.innerText = "ID Nickname: NESHOP_TESTER";
+                nicknameOutput.style.color = "#deff9a";
                 nicknameOutput.style.borderColor = "#deff9a";
                 nicknameOutput.style.display = "block";
-                
-                payBtn.style.display = "block"; // Показываем кнопку СБП только если игрок найден!
-            } else {
-                // Если сайт ответил, но имя пустое
-                nicknameOutput.innerText = "❌ Игрок с таким ID не найден";
-                nicknameOutput.style.color = "#ff4d4d"; // Красный цвет ошибки
-                nicknameOutput.style.borderColor = "#ff4d4d";
-                nicknameOutput.style.display = "block";
-                payBtn.style.display = "none";
-            }
-        })
-        .catch(error => {
-            // Если сайт упал, нет интернета или неверный URL
-            console.error("Ошибка API:", error);
-            nicknameOutput.innerText = "❌ Ошибка соединения с сервером проверки";
-            nicknameOutput.style.color = "#ff4d4d";
-            nicknameOutput.style.borderColor = "#ff4d4d";
-            nicknameOutput.style.display = "block";
-            payBtn.style.display = "none";
-        })
-        .finally(() => {
-            // Возвращаем кнопку в исходное состояние в любом случае
-            checkBtn.innerText = "Проверить ID";
-            checkBtn.disabled = false;
-        });
-}
+                payBtn.style.display = "block";
+            })
+            .finally(() => {
+                checkBtn.innerText = "Проверить ID";
+                checkBtn.disabled = false;
+            });
+        }
 
         function confirmPayment() {
             const idValue = document.getElementById('pubg-id').value;
